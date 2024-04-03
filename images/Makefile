@@ -18,7 +18,7 @@ amzn: 21.0.2-amzn 17.0.10-amzn 11.0.22-amzn 8.0.402-amzn
 		--build-arg KAFKA_VERSION=$(VERSION) \
 		-t $(IMAGE):$(VERSION)-$@ \
 		-f jammy.Dockerfile
-	podman tag $(IMAGE):$(VERSION)-$@ $(REGISTRY)/$(IMAGE):$(VERSION)-$@
+	podman tag $(IMAGE):$(VERSION)-$@ $(REGISTRY)/$(IMAGE):$(VERSION)-$@-amd64
 	podman push $(REGISTRY)/$(IMAGE):$(VERSION)-$@
 	podman build \
 		--platform linux/arm64 \
@@ -26,7 +26,7 @@ amzn: 21.0.2-amzn 17.0.10-amzn 11.0.22-amzn 8.0.402-amzn
 		--build-arg KAFKA_VERSION=$(VERSION) \
 		-t $(IMAGE):$(VERSION)-$@ \
 		-f jammy.Dockerfile
-	podman tag $(IMAGE):$(VERSION)-$@ $(REGISTRY)/$(IMAGE):$(VERSION)-$@
+	podman tag $(IMAGE):$(VERSION)-$@ $(REGISTRY)/$(IMAGE):$(VERSION)-$@-arm64
 	podman push $(REGISTRY)/$(IMAGE):$(VERSION)-$@
 
 # Test outdated environments for historical comparisions
