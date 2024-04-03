@@ -11,5 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: cd images; make 21.0.2-amzn
+    - name: build images
+      run: |
+        cd images
+        make cache
+        make 21.0.2-amzn
