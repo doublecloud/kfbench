@@ -1,7 +1,6 @@
 VERSION=3.6.1
-IMAGE=doublecloud/kfbench
-# TODO: add platforms linux/arm64,linux/amd64
-PLATFORMS=linux/amd64
+IMAGE=kfbench
+REGISTRY=?
 
 .PHONY=clean
 clean:
@@ -9,18 +8,26 @@ clean:
 
 cache:
 	mkdir -p cache
-	curl -L -o cache/kafka_2.13-$(VERSION).tgz "https://dlcdn.apache.org/kafka/3.6.1/kafka_2.13-3.6.1.tgz"
+	curl -L -o cache/kafka_2.13-$(VERSION).tgz "https://dlcdn.apache.org/kafka/$(VERSION)/kafka_2.13-$(VERSION).tgz"
 
 amzn: 21.0.2-amzn 17.0.10-amzn 11.0.22-amzn 8.0.402-amzn
 %-amzn:
-	# podman manifest create $(IMAGE):$(VERSION)-$@
-		# --platform $(PLATFORMS) \
 	podman build \
+		--platform linux/amd64 \
 		--build-arg JDK=$@ \
 		--build-arg KAFKA_VERSION=$(VERSION) \
 		-t $(IMAGE):$(VERSION)-$@ \
 		-f jammy.Dockerfile
-	# podman manifest push $(IMAGE):$(VERSION)-$@
+	podman tag $(IMAGE):$(VERSION)-$@ $(REGISTRY)/$(IMAGE):$(VERSION)-$@
+	podman push $(REGISTRY)/$(IMAGE):$(VERSION)-$@
+	podman build \
+		--platform linux/arm64 \
+		--build-arg JDK=$@ \
+		--build-arg KAFKA_VERSION=$(VERSION) \
+		-t $(IMAGE):$(VERSION)-$@ \
+		-f jammy.Dockerfile
+	podman tag $(IMAGE):$(VERSION)-$@ $(REGISTRY)/$(IMAGE):$(VERSION)-$@
+	podman push $(REGISTRY)/$(IMAGE):$(VERSION)-$@
 
 # Test outdated environments for historical comparisions
 bionic:

@@ -1,4 +1,4 @@
-FROM ubuntu:jammy-20240212 as kfbench
+FROM ubuntu:jammy-20240227 as kfbench
 LABEL maintainer="Misha Epikhin epikhinm@double.cloud"
 
 # install sdkman for different jvms
