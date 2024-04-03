@@ -1,4 +1,4 @@
-name: Tests
+name: test kfbench binary
 
 on: [pull_request]
 
@@ -14,6 +14,4 @@ jobs:
       - run: go mod download
       - run: go mod vendor
       - run: go build -v ./...
-      - name: run tests
-        run: |
-          go test ./... -v
+      - run: go test ./... -v
