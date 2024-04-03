@@ -36,14 +36,14 @@ func CreateTopic(c Config, name string) error {
 	}
 
 	fmt.Printf("[Debug] Creating topic [%s]\n", name)
-	vPtr := func(v string) *string {
-		return &v
-	}
+	// vPtr := func(v string) *string {
+	// 	return &v
+	// }
 	_, err = admc.CreateTopic(ctx, int32(c.Partitions), int16(len(bb)), map[string]*string{
 		// "retention.ms":    vPtr("21600000"),
 		// "retention.bytes": vPtr("5368709120"), //5 GB
-		"retention.ms":    vPtr("5000"),
-		"retention.bytes": vPtr("104857600"), // 1 GB
+		// "retention.ms":    vPtr("5000"), *
+		// "retention.bytes": vPtr("104857600"), // 1 GB *
 		// "file.delete.delay.ms": vPtr("0"),
 	}, name)
 	return err

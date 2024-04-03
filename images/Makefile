@@ -1,5 +1,7 @@
-
 VERSION=3.6.1
+IMAGE=doublecloud/kfbench
+# TODO: add platforms linux/arm64,linux/amd64
+PLATFORMS=linux/amd64
 
 .PHONY=clean
 clean:
@@ -7,14 +9,20 @@ clean:
 
 cache:
 	mkdir -p cache
-	curl -L -o cache/kafka_2.13-3.6.1.tgz "https://dlcdn.apache.org/kafka/3.6.1/kafka_2.13-3.6.1.tgz"
+	curl -L -o cache/kafka_2.13-$(VERSION).tgz "https://dlcdn.apache.org/kafka/3.6.1/kafka_2.13-3.6.1.tgz"
 
-amzn:
-	docker build --build-arg JDK=21.0.2-amzn  --build-arg KAFKA_VERSION=3.6.1 -t doublecloud/kfbench:3.6.1-21.0.2-amzn -f jammy.Dockerfile
-	docker build --build-arg JDK=17.0.10-amzn --build-arg KAFKA_VERSION=3.6.1 -t doublecloud/kfbench:3.6.1-17.0.10-amzn -f jammy.Dockerfile
-	docker build --build-arg JDK=11.0.22-amzn --build-arg KAFKA_VERSION=3.6.1 -t doublecloud/kfbench:3.6.1-11.0.22-amzn -f jammy.Dockerfile
-	docker build --build-arg JDK=8.0.402-amzn --build-arg KAFKA_VERSION=3.6.1 -t doublecloud/kfbench:3.6.1-8.0.402-amzn -f jammy.Dockerfile
+amzn: 21.0.2-amzn 17.0.10-amzn 11.0.22-amzn 8.0.402-amzn
+%-amzn:
+	# podman manifest create $(IMAGE):$(VERSION)-$@
+		# --platform $(PLATFORMS) \
+	podman build \
+		--build-arg JDK=$@ \
+		--build-arg KAFKA_VERSION=$(VERSION) \
+		-t $(IMAGE):$(VERSION)-$@ \
+		-f jammy.Dockerfile
+	# podman manifest push $(IMAGE):$(VERSION)-$@
 
+# Test outdated environments for historical comparisions
 bionic:
 	docker build --build-arg JDK=openjdk-11  --build-arg KAFKA_VERSION=3.6.1 -t doublecloud/kfbench:3.6.1-openjdk-11 -f bionic.Dockerfile
 	docker build --build-arg JDK=openjdk-17  --build-arg KAFKA_VERSION=3.6.1 -t doublecloud/kfbench:3.6.1-openjdk-17 -f bionic.Dockerfile

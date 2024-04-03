@@ -6,8 +6,6 @@ import (
 
 	"github.com/doublecloud/kfbench/internal/measure"
 
-	// "github.com/doublecloud/kafka-vs-msk/bench/internal/must"
-
 	"os"
 
 	"github.com/doublecloud/kfbench/internal/value"
@@ -32,7 +30,7 @@ func Produce(c Config) error {
 		go func() {
 			cn, err := kgo.NewClient(c.opts...)
 			if err != nil {
-				fmt.Fprintln(os.Stderr, "client error: %v", err)
+				fmt.Fprintf(os.Stderr, "client error: %v\n", err)
 			}
 			data := vg.Generate(1)
 
@@ -53,7 +51,7 @@ func Produce(c Config) error {
 					return rec.Value, nil
 				})
 				if err != nil {
-					fmt.Fprintln(os.Stderr, "produce error: %v", err)
+					fmt.Fprintf(os.Stderr, "produce error: %v\n", err)
 				}
 			}
 		}()
