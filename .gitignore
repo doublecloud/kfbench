@@ -2,3 +2,4 @@ images/cache
 target
 .zed
 dist/
+.github/workflows/images.yml
